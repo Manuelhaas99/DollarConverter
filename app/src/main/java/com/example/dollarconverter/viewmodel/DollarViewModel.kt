@@ -13,6 +13,8 @@ data class DollarUIData(
   val currencyInput: String = "",
   val currencyRate: Double = 0.0,
   val currencyFetchError: String = "",
+  val isInputError: Boolean = false,
+  val currencyInputError: String = ""
 )
 
 /**
@@ -33,13 +35,18 @@ class DollarViewModel : ViewModel() {
       return
     }
 
-    val doubleValue = newValue.toDouble()
+    val doubleValue = runCatching { newValue.toDouble() }.getOrElse { 0.0 }
+
+    if (_uiState.value.isInputError && doubleValue != 0.0) {
+      _uiState.update { it.copy(isInputError = false) }
+    }
+
     if (doubleValue < 0) {
       _uiState.update { it.copy(currencyValue = "No se permiten numero negativos") }
       return
     }
 
-    if (uiState.value.currencyRate > 0) {
+    if (uiState.value.currencyRate > 0 && doubleValue != 0.0) {
       val calculatedValue = when (selectedIndex) {
         0 -> doubleValue * uiState.value.currencyRate
         1 -> doubleValue / uiState.value.currencyRate
@@ -55,7 +62,12 @@ class DollarViewModel : ViewModel() {
     }
 
     // This should be moved to error handling logic and leave the currency value as 0
-    _uiState.update { it.copy(currencyValue = "Error al obtener la tasa") }
+    _uiState.update {
+      it.copy(
+        isInputError = true,
+        currencyInputError = "Solo numeros son validos"
+      )
+    }
   }
 
   fun fetchDollarToMXNRate() {
@@ -70,5 +82,8 @@ class DollarViewModel : ViewModel() {
   }
 
   private fun Double.toFormattedString() = "$%.2f".format(this)
+  fun resetInputError() {
+    _uiState.update { it.copy(isInputError = false) }
+  }
 
 }

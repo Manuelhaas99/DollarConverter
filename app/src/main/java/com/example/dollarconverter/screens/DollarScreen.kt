@@ -59,6 +59,7 @@ fun DollarConverter(viewModel: DollarViewModel) {
         3 -> "Centímetros"
         else -> ""
     }
+
     LaunchedEffect(measureSelectedIndex, inputMeasure) {
         if (inputMeasure.isNotBlank()) {
             feetConverted = try {
@@ -158,7 +159,8 @@ fun DollarConverter(viewModel: DollarViewModel) {
                 value = uiState.currencyInput,
                 onValueChange = { viewModel.handleCurrencyChange(it, selectedIndex) },
                 label = { Text(if (selectedIndex == 0) "Dólares (USD)" else "Pesos (MXN)") },
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                isError = uiState.isInputError
             )
             Text(uiState.currencyValue, fontSize = 16.sp)
 
