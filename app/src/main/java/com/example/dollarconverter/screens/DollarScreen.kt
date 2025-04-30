@@ -35,6 +35,9 @@ import com.example.dollarconverter.viewmodel.DollarViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DollarConverter(viewModel: DollarViewModel) {
+    // Variable to extract the UI values from the viewmodel
+    val uiState by viewModel.uiState.collectAsState()
+
     var input by remember { mutableStateOf("") }
     var inputMeasure by remember { mutableStateOf("") }
     var inputTemp by remember { mutableStateOf("") }
@@ -47,7 +50,6 @@ fun DollarConverter(viewModel: DollarViewModel) {
     var measureSelectedIndex by remember { mutableStateOf(0) }
     var tempSelectedIndex by remember { mutableStateOf(0) }
     var poundSelectedIndex by remember { mutableStateOf(0) }
-    val mxnRate by viewModel.mxnRate.collectAsState()
     val options = listOf("USD To MXN", "MXN To USD")
     val measureOptions = listOf("Ft to M", "M to Ft", "Inch to Cm", "CM to Inch")
     val tempOptions = listOf("Fahrenheit To Celsius", "Celsius To Fahrenheit")
@@ -63,28 +65,28 @@ fun DollarConverter(viewModel: DollarViewModel) {
     LaunchedEffect(Unit) {
         viewModel.fetchDollarToMXNRate()
     }
-    LaunchedEffect(selectedIndex, input) {
-        if (input.isNotBlank()) {
-            converted = try {
-                val value = input.toDouble()
-                if (value < 0) {
-                    "No se permiten numeros negativos"
-                } else if (mxnRate > 0) {
-                    when (selectedIndex) {
-                        0 -> "%.2f MXN".format(value * mxnRate)
-                        1 -> "%.2f USD".format(value / mxnRate)
-                        else -> ""
-                    }
-                } else {
-                    "Error al obtener la tasa"
-                }
-            } catch (e: Exception) {
-                "Entrada invalida"
-            }
-        } else {
-            converted = ""
-        }
-    }
+//    LaunchedEffect(selectedIndex, input) {
+//        if (input.isNotBlank()) {
+//            converted = try {
+//                val value = uiState.currencyValue.toDouble()
+//                if (value < 0) {
+//                    "No se permiten numeros negativos"
+//                } else if (uiState.currencyRate > 0) {
+//                    when (selectedIndex) {
+//                        0 -> "%.2f MXN".format(value * uiState.currencyRate)
+//                        1 -> "%.2f USD".format(value / uiState.currencyRate)
+//                        else -> ""
+//                    }
+//                } else {
+//                    "Error al obtener la tasa"
+//                }
+//            } catch (e: Exception) {
+//                "Entrada invalida"
+//            }
+//        } else {
+//            converted = ""
+//        }
+//    }
     LaunchedEffect(measureSelectedIndex, inputMeasure) {
         if (inputMeasure.isNotBlank()) {
             feetConverted = try {
@@ -131,7 +133,6 @@ fun DollarConverter(viewModel: DollarViewModel) {
             tempConverted = ""
         }
     }
-
     LaunchedEffect(poundSelectedIndex, inputPound) {
         if (inputPound.isNotBlank()) {
             poundConverted = try {
@@ -151,9 +152,10 @@ fun DollarConverter(viewModel: DollarViewModel) {
                 "Entrada invalida"
             }
         } else {
-             poundConverted = ""
+            poundConverted = ""
         }
     }
+
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier
@@ -162,7 +164,7 @@ fun DollarConverter(viewModel: DollarViewModel) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Text("1 USD = %.2f MXN".format(mxnRate))
+            Text("1 USD = %.2f MXN".format(uiState.currencyRate))
             SingleChoiceSegmentedButtonRow(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -181,12 +183,12 @@ fun DollarConverter(viewModel: DollarViewModel) {
             }
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = input,
-                onValueChange = { input = it },
+                value = uiState.currencyInput,
+                onValueChange = { viewModel.handleCurrencyChange(it, selectedIndex) },
                 label = { Text(if (selectedIndex == 0) "Dólares (USD)" else "Pesos (MXN)") },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
             )
-            Text(converted, fontSize = 16.sp)
+            Text(uiState.currencyValue, fontSize = 16.sp)
 
 
             //Feet to Meters
