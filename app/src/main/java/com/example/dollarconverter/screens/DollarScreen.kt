@@ -65,28 +65,6 @@ fun DollarConverter(viewModel: DollarViewModel) {
     LaunchedEffect(Unit) {
         viewModel.fetchDollarToMXNRate()
     }
-//    LaunchedEffect(selectedIndex, input) {
-//        if (input.isNotBlank()) {
-//            converted = try {
-//                val value = uiState.currencyValue.toDouble()
-//                if (value < 0) {
-//                    "No se permiten numeros negativos"
-//                } else if (uiState.currencyRate > 0) {
-//                    when (selectedIndex) {
-//                        0 -> "%.2f MXN".format(value * uiState.currencyRate)
-//                        1 -> "%.2f USD".format(value / uiState.currencyRate)
-//                        else -> ""
-//                    }
-//                } else {
-//                    "Error al obtener la tasa"
-//                }
-//            } catch (e: Exception) {
-//                "Entrada invalida"
-//            }
-//        } else {
-//            converted = ""
-//        }
-//    }
     LaunchedEffect(measureSelectedIndex, inputMeasure) {
         if (inputMeasure.isNotBlank()) {
             feetConverted = try {
