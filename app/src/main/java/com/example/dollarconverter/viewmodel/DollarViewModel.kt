@@ -1,6 +1,5 @@
 package com.example.dollarconverter.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dollarconverter.data.RetrofitClient
@@ -23,9 +22,13 @@ class DollarViewModel : ViewModel() {
   private val _uiState = MutableStateFlow(DollarUIData())
   val uiState = _uiState.asStateFlow()
 
+  init {
+    _uiState.update { it.copy(currencyValue = 0.0.toFormattedString()) }
+  }
+
   fun handleCurrencyChange(newValue: String, selectedIndex: Int) {
     if (newValue.isEmpty()) {
-      _uiState.update { it.copy(currencyInput = "", currencyValue = "") }
+      _uiState.update { it.copy(currencyInput = "", currencyValue = 0.0.toFormattedString()) }
       return
     }
 
