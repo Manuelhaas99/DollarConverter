@@ -23,6 +23,7 @@ class DollarViewModel : ViewModel() {
   val uiState = _uiState.asStateFlow()
 
   init {
+    fetchDollarToMXNRate()
     _uiState.update { it.copy(currencyValue = 0.0.toFormattedString()) }
   }
 

@@ -38,11 +38,9 @@ fun DollarConverter(viewModel: DollarViewModel) {
     // Variable to extract the UI values from the viewmodel
     val uiState by viewModel.uiState.collectAsState()
 
-    var input by remember { mutableStateOf("") }
     var inputMeasure by remember { mutableStateOf("") }
     var inputTemp by remember { mutableStateOf("") }
     var inputPound by remember { mutableStateOf("") }
-    var converted by remember { mutableStateOf("") }
     var feetConverted by remember { mutableStateOf("") }
     var tempConverted by remember { mutableStateOf("") }
     var poundConverted by remember { mutableStateOf("") }
@@ -60,10 +58,6 @@ fun DollarConverter(viewModel: DollarViewModel) {
         2 -> "Pulgadas"
         3 -> "Centímetros"
         else -> ""
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.fetchDollarToMXNRate()
     }
     LaunchedEffect(measureSelectedIndex, inputMeasure) {
         if (inputMeasure.isNotBlank()) {
