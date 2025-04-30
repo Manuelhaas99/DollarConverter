@@ -28,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dollarconverter.components.ReusableOultinedTextField
+import com.example.dollarconverter.components.ReusableSingleChoicesButton
 import com.example.dollarconverter.viewmodel.DollarViewModel
 
 
@@ -163,109 +165,69 @@ fun DollarConverter(viewModel: DollarViewModel) {
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text("1 USD = %.2f MXN".format(mxnRate))
-            SingleChoiceSegmentedButtonRow(
+            // DLS to MXN
+            ReusableSingleChoicesButton(
                 modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                options.forEachIndexed { index, label ->
-                    SegmentedButton(
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = options.size
-                        ),
-                        onClick = { selectedIndex = index },
-                        selected = index == selectedIndex,
-                        label = { Text(label) }
-                    )
-                }
-            }
-            OutlinedTextField(
+                    .fillMaxWidth(),
+                options = options,
+                selectedIndex = selectedIndex,
+                onOptionSelected = { selectedIndex = it }
+            )
+            ReusableOultinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = input,
                 onValueChange = { input = it },
-                label = { Text(if (selectedIndex == 0) "Dólares (USD)" else "Pesos (MXN)") },
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                label = if (selectedIndex == 0) "Dólares (USD)" else "Pesos (MXN)",
             )
             Text(converted, fontSize = 16.sp)
 
-
             //Feet to Meters
-            SingleChoiceSegmentedButtonRow(
+            ReusableSingleChoicesButton(
                 modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                measureOptions.forEachIndexed { index, label ->
-                    SegmentedButton(
-                        modifier = Modifier
-                            .weight(1f),
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = measureOptions.size
-                        ),
-                        onClick = { measureSelectedIndex = index },
-                        selected = index == measureSelectedIndex,
-                        label = { Text(text = label, maxLines = 1, softWrap = false) }
-                    )
-                }
-            }
-            OutlinedTextField(
+                    .fillMaxWidth(),
+                options = measureOptions,
+                selectedIndex = measureSelectedIndex,
+                onOptionSelected = { measureSelectedIndex = it }
+            )
+
+            ReusableOultinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = inputMeasure,
                 onValueChange = { inputMeasure = it },
-                label = { Text(labelText) },
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                label = labelText,
             )
             Text(feetConverted, fontSize = 16.sp)
 
             //Farenheit to Celsius
-            SingleChoiceSegmentedButtonRow(
+            ReusableSingleChoicesButton(
+                options = tempOptions,
+                selectedIndex = tempSelectedIndex,
+                onOptionSelected = { tempSelectedIndex = it }
+            )
+
+            ReusableOultinedTextField(
                 modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                tempOptions.forEachIndexed { index, label ->
-                    SegmentedButton(
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = tempOptions.size
-                        ),
-                        onClick = { tempSelectedIndex = index },
-                        selected = index == tempSelectedIndex,
-                        label = { Text(label) }
-                    )
-                }
-            }
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                    .fillMaxWidth(),
                 value = inputTemp,
                 onValueChange = { inputTemp = it },
-                label = { Text(if (tempSelectedIndex == 0) "Fahrenheit" else "Celsius") },
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                label = if (tempSelectedIndex == 0) "Fahrenheit" else "Celsius" ,
             )
             Text(tempConverted, fontSize = 16.sp)
 
             //Libras a KG
-            SingleChoiceSegmentedButtonRow(
+            ReusableSingleChoicesButton(
                 modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                poundOptions.forEachIndexed { index, label ->
-                    SegmentedButton(
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = poundOptions.size
-                        ),
-                        onClick = { poundSelectedIndex = index },
-                        selected = index == poundSelectedIndex,
-                        label = { Text(label) }
-                    )
-                }
-            }
-            OutlinedTextField(
+                    .fillMaxWidth(),
+                options = poundOptions,
+                selectedIndex = poundSelectedIndex,
+                onOptionSelected = { poundSelectedIndex = it }
+            )
+
+            ReusableOultinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = inputPound,
                 onValueChange = { inputPound = it },
-                label = { Text(if (poundSelectedIndex == 0) "Pounds" else "KG") },
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                label = if (poundSelectedIndex == 0) "Pounds" else "KG" ,
             )
             Text(poundConverted, fontSize = 16.sp)
         }
